@@ -32,6 +32,8 @@ export default async function VerificationPage({
   const { id } = await params;
   const result = await verifyCertificate(id);
 
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+
   // Format date to a human-readable format
   interface FormatDate {
     (dateInput: string | Date | null | undefined): string;
@@ -121,7 +123,7 @@ export default async function VerificationPage({
           studentName={studentName}
           studentId={certificate?.certificateId}
           certificateId={certificate?.id}
-          qrCodeValue={`http://localhost:3000/certificates/verify/${certificate?.id}`}
+          qrCodeValue={`${baseUrl}/certificates/verify/${certificate?.id}`}
           certificateType={certificate?.certificateType}
           result={certificate?.result}
           date={formatDate(certificate?.date)}
