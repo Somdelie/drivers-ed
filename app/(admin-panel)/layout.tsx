@@ -1,3 +1,4 @@
+import Header from "@/components/dash/Header";
 import Sidebar from "@/components/dash/Sidebar";
 
 export default function RootLayout({
@@ -6,13 +7,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className="">
-        <div className="flex h-screen">
-          <Sidebar />
-          <main className="flex-1 overflow-auto p-4">{children}</main>
-        </div>
-      </body>
-    </html>
+    <div className="flex h-screen">
+      <Sidebar />
+      <main className="flex-1">
+        {" "}
+        <Header />
+        <div className="p-4 overflow-auto"> {children}</div>
+      </main>
+    </div>
   );
 }

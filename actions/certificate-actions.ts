@@ -41,6 +41,24 @@ interface ActionResponse {
   error?: string;
 }
 
+interface DashboardStats {
+  totalCertificates: number;
+  validCertificates: number;
+  invalidCertificates: number;
+  expiringCertificates: number;
+  averageScore: number;
+  recentCertificates: {
+    name: string;
+    surname: string;
+    result: string;
+    date: string;
+  }[];
+  monthlyStats: {
+    month: string;
+    count: number;
+  }[];
+}
+
 /**
  * Create a new certificate
  */
@@ -272,4 +290,153 @@ function generateCertificateId(): string {
     .slice(2, 6) // Get 4 characters
     .toUpperCase(); // Convert to uppercase
   return `${timestamp}${random}${randomChar}`;
+}
+
+export async function getDashboardStats(): Promise<DashboardStats> {
+  try {
+    // Get total certificates count
+    const totalCertificates = await db.certificate.count();
+
+    // Get valid certificates count
+    const validCertificates = await db.certificate.count({
+      where: {
+        isValid: true,
+        OR: [{ expiryDate: null }, { expiryDate: { gt: new Date() } }],
+      },
+    });
+
+    // Get invalid certificates count
+    const invalidCertificates = await db.certificate.count({
+      where: {
+        OR: [
+          { isValid: false },
+          {
+            isValid: true,
+            expiryDate: { lt: new Date() },
+          },
+        ],
+      },
+    });
+
+    // Get expiring soon (next 30 days) certificates count
+    const thirtyDaysFromNow = new Date();
+    thirtyDaysFromNow.setDate(thirtyDaysFromNow.getDate() + 30);
+
+    const expiringCertificates = await db.certificate.count({
+      where: {
+        isValid: true,
+        expiryDate: {
+          gt: new Date(),
+          lt: thirtyDaysFromNow,
+        },
+      },
+    });
+
+    // Get average score
+    const certificates = await db.certificate.findMany({
+      select: {
+        result: true,
+      },
+    });
+
+    const totalScore = certificates.reduce((acc, cert) => {
+      const score = parseFloat(cert.result);
+      return acc + (isNaN(score) ? 0 : score);
+    }, 0);
+
+    const averageScore = totalScore / (certificates.length || 1);
+
+    // Get recent certificates
+    const recentCertificates = await db.certificate.findMany({
+      select: {
+        name: true,
+        surname: true,
+        result: true,
+        date: true,
+      },
+      orderBy: {
+        date: "desc",
+      },
+      take: 3,
+    });
+
+    // Format recent certificates for display
+    const formattedRecentCertificates = recentCertificates.map((cert) => ({
+      name: cert.name,
+      surname: cert.surname,
+      result: cert.result,
+      date: cert.date.toISOString(),
+    }));
+
+    // Generate monthly statistics
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+
+    // Get certificates for the last 3 months
+    const monthlyStats = [];
+    const monthNames = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+
+    for (let i = 2; i >= 0; i--) {
+      const month = (currentMonth - i + 12) % 12; // Handle wrapping around to previous year
+      const year = currentMonth - i < 0 ? currentYear - 1 : currentYear;
+
+      const startDate = new Date(year, month, 1);
+      const endDate = new Date(year, month + 1, 0); // Last day of month
+
+      const count = await db.certificate.count({
+        where: {
+          date: {
+            gte: startDate,
+            lte: endDate,
+          },
+        },
+      });
+
+      monthlyStats.push({
+        month: monthNames[month],
+        count,
+      });
+    }
+
+    return {
+      totalCertificates,
+      validCertificates,
+      invalidCertificates,
+      expiringCertificates,
+      averageScore,
+      recentCertificates: formattedRecentCertificates,
+      monthlyStats,
+    };
+  } catch (error) {
+    console.error("Error fetching dashboard stats:", error);
+
+    // Return fallback data in case of error
+    return {
+      totalCertificates: 0,
+      validCertificates: 0,
+      invalidCertificates: 0,
+      expiringCertificates: 0,
+      averageScore: 0,
+      recentCertificates: [],
+      monthlyStats: [
+        { month: "Jan", count: 0 },
+        { month: "Feb", count: 0 },
+        { month: "Mar", count: 0 },
+      ],
+    };
+  }
 }

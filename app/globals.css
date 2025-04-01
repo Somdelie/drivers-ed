@@ -1,5 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@700&display=swap');
+@import '@fontsource/trade-winds';
+@import '@fontsource/saira-stencil-one';
 @import "tailwindcss";
 @import "tw-animate-css";
+
+
 
 @custom-variant dark (&:is(.dark *));
 
@@ -121,6 +127,16 @@
   }
 }
 
+
+.certificate-name {
+  /* font-family: 'Bebas Neue', sans-serif; */
+  font-family: 'Saira Stencil One', sans-serif;
+  /* or */
+  /* font-family: 'Oswald', sans-serif; */
+  /* font-family: 'Piedra', system-ui; */
+  /* font-family: 'Trade Winds', sans-serif; */
+  font-weight: 400;
+}
 
 .certificate-container {
   width: 100%;

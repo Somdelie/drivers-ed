@@ -3,7 +3,6 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -72,6 +71,8 @@ const CreateDialog = () => {
 
       if (result.success) {
         toast.success("Certificate created successfully", {
+          position: "top-right",
+          duration: 3000,
           style: {
             backgroundColor: "green",
             color: "white",
@@ -109,105 +110,107 @@ const CreateDialog = () => {
       <DialogTrigger asChild>
         <Button variant="default">Create New Certificate</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>
+      <DialogContent className="sm:max-w-[725px] h-auto max-h-[90vh] overflow-y-auto p-4 md:p-6">
+        <DialogHeader className="mb-4">
+          <DialogTitle className="text-lg md:text-xl">
             Fill in the details for your new certificate
           </DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="text-sm md:text-base">
             This will be used to create a new certificate entry in the system.
-            Please provide all the necessary information.
           </DialogDescription>
         </DialogHeader>
-        <form className="grid grid-cols-1 gap-6" onSubmit={handleSubmit}>
-          {/* name */}
-          <div className="space-y-2">
-            <Label htmlFor="name">Driver First Name*</Label>
-            <Input
-              id="name"
-              type="text"
-              placeholder="Miles"
-              className="w-full"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              disabled={isPending}
-            />
-          </div>
+        <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            {/* name */}
+            <div className="space-y-1">
+              <Label htmlFor="name" className="text-sm">
+                Driver First Name*
+              </Label>
+              <Input
+                id="name"
+                type="text"
+                placeholder="Miles"
+                className="w-full"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                disabled={isPending}
+              />
+            </div>
 
-          {/* surname */}
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="surname" className="text-right">
-              Driver Last Name*
-            </Label>
-            <Input
-              id="surname"
-              placeholder="White"
-              value={surname}
-              onChange={(e) => setSurname(e.target.value)}
-              disabled={isPending}
-            />
-          </div>
+            {/* surname */}
+            <div className="space-y-1">
+              <Label htmlFor="surname" className="text-sm">
+                Driver Last Name*
+              </Label>
+              <Input
+                id="surname"
+                placeholder="White"
+                value={surname}
+                onChange={(e) => setSurname(e.target.value)}
+                disabled={isPending}
+              />
+            </div>
 
-          {/* city */}
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="city" className="text-right">
-              Driver City*
-            </Label>
-            <Input
-              id="city"
-              placeholder="Cape Town"
-              value={city}
-              onChange={(e) => setCity(e.target.value)}
-              disabled={isPending}
-            />
-          </div>
+            {/* city */}
+            <div className="space-y-1">
+              <Label htmlFor="city" className="text-sm">
+                Driver City*
+              </Label>
+              <Input
+                id="city"
+                placeholder="Cape Town"
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                disabled={isPending}
+              />
+            </div>
 
-          {/* marks */}
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="marks" className="text-right">
-              Marks Result in Percentage*
-            </Label>
-            <Input
-              id="marks"
-              placeholder="94"
-              value={marks}
-              onChange={(e) => setMarks(e.target.value)}
-              disabled={isPending}
-              type="number"
-              min="0"
-              max="100"
-              step="0.1"
-            />
-          </div>
+            {/* marks */}
+            <div className="space-y-1">
+              <Label htmlFor="marks" className="text-sm">
+                Marks (%)*
+              </Label>
+              <Input
+                id="marks"
+                placeholder="94"
+                value={marks}
+                onChange={(e) => setMarks(e.target.value)}
+                disabled={isPending}
+                type="number"
+                min="0"
+                max="100"
+                step="0.1"
+              />
+            </div>
 
-          {/* instructor */}
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="instructor" className="text-right">
-              Instructor
-            </Label>
-            <Input
-              id="instructor"
-              placeholder="Rihaad"
-              value={instructor}
-              onChange={(e) => setInstructor(e.target.value)}
-              disabled={isPending}
-            />
+            {/* instructor */}
+            <div className="space-y-1 md:col-span-2">
+              <Label htmlFor="instructor" className="text-sm">
+                Instructor
+              </Label>
+              <Input
+                id="instructor"
+                placeholder="Rihaad"
+                value={instructor}
+                onChange={(e) => setInstructor(e.target.value)}
+                disabled={isPending}
+              />
+            </div>
           </div>
 
           {/* error message */}
-          {error && <p className="text-sm text-red-500 mt-1">{error}</p>}
+          {error && <p className="text-sm text-red-500">{error}</p>}
 
           {/* submit button */}
           <Button
             type="submit"
-            size="lg"
             disabled={isPending || buttonDisabled}
-            className="min-w-[150px]"
+            className="w-full mt-2 md:w-auto md:self-end"
           >
             {isPending ? (
               <span className="flex items-center gap-2">
-                <Loader2 className="animate-spin h-4 w-4" />
-                <span>Creating Certificate...</span>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                <span>Creating...</span>
               </span>
             ) : (
               "Create Certificate"

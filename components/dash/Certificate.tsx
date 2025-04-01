@@ -40,7 +40,7 @@ const Certificate: React.FC<CertificateProps> = ({
         x="400"
         y="177"
         textAnchor="middle"
-        className="text-xl font-bold opacity-90 sm:text-2xl text-[#000000]"
+        className="text-xl opacity-80 sm:text-2xl text-[#000000] certificate-name"
       >
         {studentName}
       </text>
@@ -50,7 +50,7 @@ const Certificate: React.FC<CertificateProps> = ({
         x="400"
         y="205"
         textAnchor="middle"
-        className=" text-xl font-bold opacity-90 sm:text-xl text-[#000000]"
+        className="opacity-75 sm:text-lg text-[#000000] certificate-name"
       >
         ({studentId})
       </text>
@@ -60,7 +60,7 @@ const Certificate: React.FC<CertificateProps> = ({
         x="400"
         y="355"
         textAnchor="middle"
-        className="text-xl font-bold sm:text-2xl"
+        className="text-xl font-bold opacity-75 sm:text-2xl certificate-name"
       >
         {result}%
       </text>
@@ -70,7 +70,7 @@ const Certificate: React.FC<CertificateProps> = ({
         x="400"
         y="410"
         textAnchor="middle"
-        className="text-xl font-bold opacity-80 sm:text-2xl text-[#000000]"
+        className="text-xl font-bold opacity-75 sm:text-2xl text-[#000000] certificate-name"
       >
         {date}
       </text>
